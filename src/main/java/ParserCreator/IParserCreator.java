@@ -7,7 +7,6 @@ import FunctionalMatcher.State;
 
 public interface IParserCreator {
 	public void create(StringBuilder sb, int indent);
-	public Optional<MatchResult<IParserCreator>> parse(State state);
 
 	default void write(StringBuilder sb, int indent, String str) {
 		CodeWriter.write(sb, indent, str);

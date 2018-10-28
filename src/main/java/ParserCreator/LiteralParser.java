@@ -7,6 +7,7 @@ import FunctionalMatcher.MatcherOfAsciiCharacterClass;
 import FunctionalMatcher.MatcherOfGreedyZeroOrMore;
 import FunctionalMatcher.MatcherOfJust;
 import FunctionalMatcher.MatcherOfNegativeCharacterClass;
+import FunctionalMatcher.MatcherOfSelect;
 import FunctionalMatcher.State;
 
 public class LiteralParser implements IParserCreator {
@@ -25,16 +26,27 @@ public class LiteralParser implements IParserCreator {
 		sb.append(')');
 	}
 
-	@Override
-	public Optional<MatchResult<IParserCreator>> parse(State state) {
-		return MatcherOfJust.of("\"")
+	public static Optional<MatchResult<LiteralParser>> parse(State state) {
+		return MatcherOfSelect.of(
+				MatcherOfJust.of("\"")
 				.next(MatcherOfGreedyZeroOrMore.of(
 					(str, start, end, m) -> {
-						return Optional.of((IParserCreator)new LiteralParser(str.substring(start,end)));
+						return Optional.of(new LiteralParser(str.substring(start,end)));
 					},
 					MatcherOfNegativeCharacterClass.of(
 						MatcherOfAsciiCharacterClass.of("\"")
 					).toContinuation()
-				)).skip(MatcherOfJust.of("\"")).match(state);
+				)).skip(MatcherOfJust.of("\""))
+			).or(
+					MatcherOfJust.of("'")
+					.next(MatcherOfGreedyZeroOrMore.of(
+						(str, start, end, m) -> {
+							return Optional.of(new LiteralParser(str.substring(start,end)));
+						},
+						MatcherOfNegativeCharacterClass.of(
+							MatcherOfAsciiCharacterClass.of("'")
+						).toContinuation()
+					)).skip(MatcherOfJust.of("'"))
+			).match(state);
 	}
 }

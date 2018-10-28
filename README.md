@@ -1,2 +1,2 @@
 # ParserCreator
-FunctionalMatcherを利用したパーサコンビネータのひな形をebnfから自動生成するツール
+FunctionalMatcherを利用したパーサコンビネータのひな形をebnfから自動生成するためのライブラリ
