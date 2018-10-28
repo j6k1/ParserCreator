@@ -45,10 +45,3 @@ dependencies {
 	testCompile 'junit:junit:4.+'
     compile fileTree(dir: './lib', includes: ['*.jar'])
 }
-
-jar {
- 	manifest {
- 		attributes "Main-Class" : "ParserCreator.Main"
- 	}
- 	from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-}
