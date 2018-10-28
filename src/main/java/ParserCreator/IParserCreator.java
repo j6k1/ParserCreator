@@ -1,10 +1,5 @@
 package ParserCreator;
 
-import java.util.Optional;
-
-import FunctionalMatcher.MatchResult;
-import FunctionalMatcher.State;
-
 public interface IParserCreator {
 	public void create(StringBuilder sb, int indent);
 

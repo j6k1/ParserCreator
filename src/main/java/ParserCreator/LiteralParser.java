@@ -26,27 +26,27 @@ public class LiteralParser implements IParserCreator {
 		sb.append(')');
 	}
 
-	public static Optional<MatchResult<LiteralParser>> parse(State state) {
+	public static Optional<MatchResult<IParserCreator>> parse(State state) {
 		return MatcherOfSelect.of(
 				MatcherOfJust.of("\"")
 				.next(MatcherOfGreedyZeroOrMore.of(
 					(str, start, end, m) -> {
-						return Optional.of(new LiteralParser(str.substring(start,end)));
+						return Optional.of((IParserCreator)new LiteralParser(str.substring(start,end)));
 					},
 					MatcherOfNegativeCharacterClass.of(
 						MatcherOfAsciiCharacterClass.of("\"")
 					).toContinuation()
 				)).skip(MatcherOfJust.of("\""))
 			).or(
-					MatcherOfJust.of("'")
-					.next(MatcherOfGreedyZeroOrMore.of(
-						(str, start, end, m) -> {
-							return Optional.of(new LiteralParser(str.substring(start,end)));
-						},
-						MatcherOfNegativeCharacterClass.of(
-							MatcherOfAsciiCharacterClass.of("'")
-						).toContinuation()
-					)).skip(MatcherOfJust.of("'"))
+				MatcherOfJust.of("'")
+				.next(MatcherOfGreedyZeroOrMore.of(
+					(str, start, end, m) -> {
+						return Optional.of((IParserCreator)new LiteralParser(str.substring(start,end)));
+					},
+					MatcherOfNegativeCharacterClass.of(
+						MatcherOfAsciiCharacterClass.of("'")
+					).toContinuation()
+				)).skip(MatcherOfJust.of("'"))
 			).match(state);
 	}
 }

@@ -9,29 +9,23 @@ import FunctionalMatcher.MatcherOfJust;
 import FunctionalMatcher.MatcherOfSelect;
 import FunctionalMatcher.State;
 
-public class OneOrZeroParser implements IParserCreator {
+public class ParenParser implements IParserCreator {
 	private final IParserCreator child;
 
-	public OneOrZeroParser(IParserCreator child) {
+	protected ParenParser(IParserCreator child) {
 		this.child = child;
 	}
 
 	@Override
 	public void create(StringBuilder sb, int indent) {
-		write(sb,indent,"MatcherOfOneOrZero.of(");
-		writeDefaultCallback(sb, indent);
-		sb.append(',');
 		child.create(sb, indent);
-		sb.append(')');
 	}
 
 	public static Optional<MatchResult<IParserCreator>> parse(State state) {
 		return MatcherOfJust.of("(").next(MatcherOfGreedyZeroOrMore.of(
 			MatcherOfAsciiCharacterClass.of(" \t\r\n").toContinuation()
 		)).next(MatcherOfSelect.of(
-			(str, start, end, m) -> {
-				return m.flatMap(r -> r.value.map(v -> (IParserCreator)new OneOrZeroParser(v)));
-			}, (s -> FowardParser.parse(s))
+			(s -> FowardParser.parse(s))
 		).or(
 			(s -> OneOrZeroParser.parse(s))
 		).or(
@@ -50,6 +44,6 @@ public class OneOrZeroParser implements IParserCreator {
 			(s -> UserParser.parse(s))
 		)).skip(MatcherOfGreedyZeroOrMore.of(
 			MatcherOfAsciiCharacterClass.of(" \t\r\n").toContinuation()
-		)).skip(MatcherOfJust.of(")?")).match(state);
+		)).skip(MatcherOfJust.of(")")).match(state);
 	}
 }
