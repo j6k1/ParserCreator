@@ -75,7 +75,7 @@ public class ExpressionParser implements IParserCreator {
 					)
 				).skip(MatcherOfGreedyZeroOrMore.of(
 					MatcherOfAsciiCharacterClass.of(" \t\r\n").toContinuation()
-				)).skip(MatcherOfJust.of(")"))
+				))
 			).map(r -> {
 				return MatchResult.of(n.range.compositeOf(r.range),Optional.of(new ExpressionParser(n.value.get(),r.value.get())));
 			});
