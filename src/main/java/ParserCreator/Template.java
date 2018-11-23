@@ -1,6 +1,8 @@
 package ParserCreator;
 
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import FunctionalMatcher.FowardMatcher;
 import FunctionalMatcher.IMatcher;
@@ -99,8 +101,12 @@ class Placeholder implements IMatcher<String> {
 		return MatcherOfJust.of("{{:").next(
 			MatcherOfGreedyOneOrMore.of(
 				(str,start,end,m) -> {
+					int index = Integer.parseInt(str.substring(start,end));
+
 					return Optional.of(
-						indent + args[Integer.parseInt(str.substring(start,end))].toString()
+						String.join("\n", Arrays.stream(args[index].toString().split("\\r\\n|\\r|\\n")).map(l -> {
+							return indent + l;
+						}).collect(Collectors.toList()))
 					);
 				},
 				MatcherOfAsciiCharacterClass.of("0123456789").toContinuation()
