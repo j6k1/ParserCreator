@@ -17,13 +17,12 @@ public class OneOrMoreParser implements IParserCreator {
 	}
 
 	@Override
-	public void create(StringBuilder sb, int indent) {
-		write(sb,indent,"MatcherOfGreedyOneOrMore.of(");
-		writeDefaultCallback(sb, indent);
-		sb.append(',');
-		child.create(sb, indent);
-		sb.append(".toContinuation()");
-		sb.append(')');
+	public String create() {
+		return new Template("MatcherOfGreedyOneOrMore.of(\r\n" +
+			"	{{:0}},\r\n" +
+			"	{{:1}}.toContinuation()\r\n" +
+			")"
+		).apply(defaultCallbackString(),this.child.create());
 	}
 
 	public static Optional<MatchResult<IParserCreator>> parse(State state) {
@@ -49,7 +48,7 @@ public class OneOrMoreParser implements IParserCreator {
 			(s -> LiteralParser.parse(s))
 		).or(
 			(s -> UserParser.parse(s))
-					)).skip(MatcherOfGreedyZeroOrMore.of(
+		)).skip(MatcherOfGreedyZeroOrMore.of(
 			MatcherOfAsciiCharacterClass.of(" \t\r\n").toContinuation()
 		)).skip(MatcherOfJust.of(")+")).match(state);
 	}

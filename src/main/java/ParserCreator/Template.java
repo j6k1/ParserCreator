@@ -87,6 +87,14 @@ public class Template {
 			).toContinuation()
 		)).match(State.of(this.tpl,0,false)).flatMap(r -> r.value).orElse("");
 	}
+
+	public static String repeatString(char c, int indent) {
+		StringBuilder sb = new StringBuilder();
+
+		for(int i=0; i < indent; i++) sb.append(c);
+
+		return sb.toString();
+	}
 }
 class Placeholder implements IMatcher<String> {
 	private final Object[] args;

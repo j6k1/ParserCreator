@@ -23,23 +23,21 @@ public class FowardParser implements IParserCreator {
 	}
 
 	@Override
-	public void create(StringBuilder sb, int indent) {
+	public String create() {
 		if(positive) {
-			write(sb,indent,"FowardMatcher.of(");
-			writeDefaultCallback(sb, indent);
-			sb.append(',');
-			child.create(sb, indent);
-			sb.append(')');
+			return new Template("FowardMatcher.of(\r\n" +
+				"		{{:0}},\r\n" +
+				"		{{:1}}\r\n" +
+				"	)"
+			).apply(defaultCallbackString(),this.child.create());
 		} else {
-			write(sb,indent,"FowardMatcher.of(");
-			writeDefaultCallback(sb, indent);
-			sb.append(',');
-			sb.append("NegativeMatcher.of(\n");
-			sb.append(repeatString('\t', indent+1));
-			child.create(sb, indent+1);
-			sb.append('\n');
-			sb.append(repeatString('\t', indent));
-			sb.append("))");
+			return new Template("FowardMatcher.of(\r\n" +
+				"		{{:0}},\r\n" +
+				"		NegativeMatcher.of(\r\n" +
+				"			{{:1}}\r\n" +
+				"		)\r\n" +
+				"	)"
+			).apply(defaultCallbackString(),this.child.create());
 		}
 	}
 

@@ -2,6 +2,7 @@ package ParserCreator;
 
 import java.util.Optional;
 
+import FunctionalMatcher.IMatcher;
 import FunctionalMatcher.MatchResult;
 import FunctionalMatcher.MatcherOfAsciiCharacterClass;
 import FunctionalMatcher.MatcherOfCharacterClassMultiple;
@@ -21,7 +22,14 @@ public class ExpressionParser implements IParserCreator {
 	}
 
 	@Override
-	public void create(StringBuilder sb, int indent) {
+	public String create() {
+		return new Template("class {{:0}}Parser implements IMatcher<String> {\r\n" +
+			"	@Override\r\n" +
+			"	public Optional<MatchResult<String>> match(State state) {\r\n" +
+			"		{{:1}}.match(state);\r\n" +
+			"	}\r\n" +
+			"}"
+		).apply(this.name,this.expr.create());
 	}
 
 	public static Optional<MatchResult<IParserCreator>> parse(State state) {
@@ -74,3 +82,4 @@ public class ExpressionParser implements IParserCreator {
 		});
 	}
 }
+

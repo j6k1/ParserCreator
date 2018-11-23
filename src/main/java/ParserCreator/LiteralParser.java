@@ -18,12 +18,12 @@ public class LiteralParser implements IParserCreator {
 	}
 
 	@Override
-	public void create(StringBuilder sb, int indent) {
-		write(sb, indent, "MatcherOfJust.of(");
-		writeDefaultCallback(sb, indent+1);
-		sb.append(',');
-		sb.append("\"" + ident + "\"");
-		sb.append(')');
+	public String create() {
+		return new Template("MatcherOfJust.of(\r\n" +
+			"	{{:0}},\r\n" +
+			"	\"{{:1}}\"\r\n" +
+			")"
+		).apply(CodeUtil.defaultCallbackString(),this.ident);
 	}
 
 	public static Optional<MatchResult<IParserCreator>> parse(State state) {

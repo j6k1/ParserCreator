@@ -21,19 +21,22 @@ public class SelectParser implements IParserCreator {
 	}
 
 	@Override
-	public void create(StringBuilder sb, int indent) {
-		sb.append("MatcherOfSelect.of(");
-		writeDefaultCallback(sb, indent);
-		sb.append(',');
-		this.children.get(0).create(sb, indent);
+	public String create() {
+		StringBuilder sb = new StringBuilder();
 
-		sb.append(repeatString('\t', indent));
+		sb.append(new Template(
+			"MatcherOfSelect.of(\r\n" +
+			"	{{:0}},\r\n" +
+			"	{{:1}}\r\n"
+		).apply(defaultCallbackString(),this.children.get(0).create()));
 
 		for(int i=1,l=this.children.size()-1; i < l; i++) {
-			sb.append(").or(");
-			this.children.get(i).create(sb, indent+1);
+			sb.append(").or(\r\n");
+			sb.append(new Template("	{{:0}}").apply(this.children.get(i).create()));
 			sb.append(')');
 		}
+
+		return sb.toString();
 	}
 
 	public static Optional<MatchResult<IParserCreator>> parse(State state) {

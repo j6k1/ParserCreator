@@ -19,10 +19,12 @@ public class UserParser implements IParserCreator {
 	}
 
 	@Override
-	public void create(StringBuilder sb, int indent) {
-		sb.append(name + ".of(");
-		writeDefaultCallback(sb, indent);
-		sb.append(')');
+	public String create() {
+		return new Template(
+			"{{:0}}.of(\r\n" +
+			"	{{:1}}\r\n" +
+			")"
+		).apply(this.name,defaultCallbackString());
 	}
 
 	public static Optional<MatchResult<IParserCreator>> parse(State state) {

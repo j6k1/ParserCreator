@@ -17,8 +17,8 @@ public class ParenParser implements IParserCreator {
 	}
 
 	@Override
-	public void create(StringBuilder sb, int indent) {
-		child.create(sb, indent);
+	public String create() {
+		return child.create();
 	}
 
 	public static Optional<MatchResult<IParserCreator>> parse(State state) {

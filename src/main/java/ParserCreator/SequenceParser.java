@@ -20,27 +20,30 @@ public class SequenceParser implements IParserCreator {
 	}
 
 	@Override
-	public void create(StringBuilder sb, int indent) {
+	public String create() {
+		StringBuilder sb = new StringBuilder();
+
 		if(this.children.size() == 1) {
-			this.children.get(0).create(sb, indent);
+			sb.append(this.children.get(0).create());
 		} else {
-			this.children.get(0).create(sb, indent);
+			sb.append(this.children.get(0).create());
 
 			for(int i=1,l=this.children.size()-1; i < l; i++) {
-				sb.append(".seq(");
-				this.children.get(i).create(sb, indent+1);
+				sb.append(".seq(\r\n");
+				sb.append(new Template("	{{:0}}").apply(this.children.get(i).create()));
 				sb.append(')');
-				sb.append('\n');
+				sb.append("\r\n");
 			}
 
-			sb.deleteCharAt(sb.length()-1);
+			sb.delete(sb.length()-2, sb.length());
 		}
-		sb.append(".map(");
-		writeDefaultCallback(sb, indent);
-		sb.append('\n');
-		sb.append(repeatString('\t', indent));
-		sb.append(')');
+		sb.append(new Template(
+			".map(\r\n" +
+			"	{{:0}}\r\n" +
+			")"
+		).apply(defaultCallbackString()));
 
+		return sb.toString();
 	}
 
 	public static Optional<MatchResult<IParserCreator>> parse(State state) {
