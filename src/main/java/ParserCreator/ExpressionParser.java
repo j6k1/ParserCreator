@@ -23,10 +23,10 @@ public class ExpressionParser implements IParserCreator {
 
 	@Override
 	public String create() {
-		return new Template("class {{:0}}Parser implements IMatcher<String> {\r\n" +
+		return new Template("public class {{:0}}Parser implements IMatcher<String> {\r\n" +
 			"	@Override\r\n" +
 			"	public Optional<MatchResult<String>> match(State state) {\r\n" +
-			"		{{:1}}.match(state);\r\n" +
+			"		return {{:1}}.match(state);\r\n" +
 			"	}\r\n" +
 			"}"
 		).apply(this.name,this.expr.create());
