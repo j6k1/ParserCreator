@@ -23,7 +23,7 @@ public class ExpressionParser implements IParserCreator {
 
 	@Override
 	public String create() {
-		return new Template("public class {{:0}}Parser implements IMatcher<String> {\r\n" +
+		return new Template("public class {{:0}} implements IMatcher<String> {\r\n" +
 			"	@Override\r\n" +
 			"	public Optional<MatchResult<String>> match(State state) {\r\n" +
 			"		return {{:1}}.match(state);\r\n" +
