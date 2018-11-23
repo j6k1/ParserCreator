@@ -32,7 +32,39 @@ public class Template {
 
 			return Optional.of(sb.toString());
 		}, MatcherOfGreedyZeroOrMore.of(
-			MatcherOfSelect.of(s1 -> {
+			MatcherOfSelect.of(
+				MatcherOfJust.of("\"").next(
+					MatcherOfFold.of((str, start, end, lst) -> {
+						StringBuilder sb = new StringBuilder();
+
+						for(MatchResult<String> token: lst) {
+							token.value.ifPresent(t -> sb.append(t));
+						}
+
+						return Optional.of(sb.toString());
+					},
+					MatcherOfGreedyOneOrMore.of(
+						MatcherOfSelect.of(MatcherOfJust.of("\\")
+							.next(MatcherOfAnyChar.of((str,start,end,m) -> {
+								return Optional.of(str.substring(start,end));
+							}, false))
+						).or(MatcherOfJust.of((str,start,end,m) -> {
+							return Optional.of("!");
+						}, "!!")).or(MatcherOfJust.of("!{{:").next(
+							MatcherOfGreedyOneOrMore.of(
+								(str,start,end,m) -> {
+									return Optional.of(str.substring(start, end));
+								},
+								MatcherOfAsciiCharacterClass.of("0123456789").toContinuation()
+							)
+						).skip(MatcherOfJust.of("}}")))
+						.or(new Placeholder(args,""))
+						.or(MatcherOfAnyChar.of((str,start,end,m) -> {
+							return Optional.of(str.substring(start,end));
+						}, false)).toContinuation()
+					)
+				)).skip(MatcherOfJust.of("\""))
+			).or(s1 -> {
 				return MatcherOfGreedyZeroOrMore.of(
 					(str,start,end,m) -> {
 						return Optional.of(str.substring(start,end));
